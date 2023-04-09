@@ -37,13 +37,13 @@ check_detail:
 
 # counter
 counter_server:
-	watch -n 1 -d 'sudo ip netns exec $(NS1) ip -s a show dev $(PORT1)'
+	watch -n 1 -d 'sudo ip netns exec $(NS1) ip -s a show dev $(PORT1); sudo ip netns exec $(NS1) netstat -s -t'
 
 counter_nic_server:
 	watch -n 1 -d 'sudo ip netns exec $(NS1) ethtool -S $(PORT1) | grep -v ": 0"'
 
 counter_client:
-	watch -n 1 -d 'sudo ip netns exec $(NS2) ip -s a show dev $(PORT2)'
+	watch -n 1 -d 'sudo ip netns exec $(NS2) ip -s a show dev $(PORT2); sudo ip netns exec $(NS1) netstat -s -t'
 
 counter_nic_client:
 	watch -n 1 -d 'sudo ip netns exec $(NS2) ethtool -S $(PORT2) | grep -v ": 0"'
@@ -53,7 +53,7 @@ server:
 	sudo ip netns exec $(NS1) iperf3 -s
 
 client:
-	sudo ip netns exec $(NS2) iperf3 -c 192.168.1.1
+	sudo ip netns exec $(NS2) iperf3 -c 192.168.1.1 -V
 
 # clean up
 clean:
